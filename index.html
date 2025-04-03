@@ -53,10 +53,35 @@
             color: white;
             font-size: 6vw;
             font-weight: bold;
-            text-align: center;
+            font-style: italic;
+            text-align: left;
             text-shadow: 0 0 8px rgba(255, 255, 255, 0.8);
             letter-spacing: 2px;
             animation: textFlicker 3s infinite alternate;
+            width: 80%;
+            margin: 0 auto;
+        }
+        
+        .first-letter {
+            font-size: 1.2em;
+            vertical-align: text-top;
+            line-height: 0.8;
+        }
+        
+        .remaining-letters {
+            font-size: 0.5em;
+            vertical-align: text-bottom;
+        }
+        
+        .title-line1 {
+            position: relative;
+            z-index: 1;
+        }
+        
+        .title-line2 {
+            position: relative;
+            margin-top: -0.6em;
+            z-index: 2;
         }
         
         .crt-scanlines {
@@ -198,7 +223,10 @@
     <div class="crt-container">
         <div class="crt-frame">
             <div class="crt-screen">
-                <div class="crt-content">Untitled Unbranded</div>
+                <div class="crt-content">
+                    <div class="title-line1"><span class="first-letter">U</span><span class="remaining-letters" style="margin-left: 1vw;">NTITLED</span></div>
+                    <div class="title-line2" style="margin-left: 0.9vw;"><span class="first-letter">U</span><span class="remaining-letters">NBRANDED</span></div>
+                </div>
                 <div class="crt-glow"></div>
                 <div class="crt-scanlines"></div>
                 <div class="crt-flicker"></div>
