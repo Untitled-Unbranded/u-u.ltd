@@ -10,56 +10,28 @@
             padding: 0;
             height: 100%;
             overflow: hidden;
-            background-color: #000;
+            background-color: #001500;
             font-family: Helvetica, Arial, sans-serif;
-        }
-        
-        .crt-container {
-            position: relative;
-            width: 100%;
-            height: 100%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            background-color: #000;
-        }
-        
-        .crt-frame {
-            position: absolute;
-            width: 90%;
-            height: 80%;
-            background-color: #131313;
-            border-radius: 20px;
-            box-shadow: 0 0 30px rgba(0, 0, 0, 0.8);
-            overflow: hidden;
         }
         
         .crt-screen {
             position: absolute;
-            width: calc(100% - 40px);
-            height: calc(100% - 40px);
-            top: 20px;
-            left: 20px;
+            width: 100%;
+            height: 100%;
             background-color: #001500;
             overflow: hidden;
-            display: flex;
-            justify-content: center;
-            align-items: center;
         }
         
         .crt-content {
-            position: relative;
-            z-index: 2;
+            position: absolute;
             color: white;
             font-size: 6vw;
             font-weight: bold;
             font-style: italic;
-            text-align: left;
             text-shadow: 0 0 8px rgba(255, 255, 255, 0.8);
             letter-spacing: 2px;
             animation: textFlicker 3s infinite alternate;
-            width: 80%;
-            margin: 0 auto;
+            user-select: none;
         }
         
         .first-letter {
@@ -185,78 +157,46 @@
                 transform: translateX(0);
             }
         }
-        
-        .crt-button {
-            position: absolute;
-            bottom: 25px;
-            right: 30px;
-            width: 15px;
-            height: 15px;
-            background-color: #222;
-            border-radius: 50%;
-            box-shadow: 0 0 5px rgba(0, 255, 0, 0.5);
-        }
-        
-        .crt-power-light {
-            position: absolute;
-            bottom: 25px;
-            right: 60px;
-            width: 10px;
-            height: 10px;
-            background-color: #00ff00;
-            border-radius: 50%;
-            box-shadow: 0 0 10px rgba(0, 255, 0, 0.8);
-            animation: blink 2s infinite alternate;
-        }
-        
-        @keyframes blink {
-            0%, 95% {
-                opacity: 1;
-            }
-            96%, 100% {
-                opacity: 0.5;
-            }
-        }
     </style>
 </head>
 <body>
-    <div class="crt-container">
-        <div class="crt-frame">
-            <div class="crt-screen">
-                <div class="crt-content">
-                    <div class="title-line1"><span class="first-letter">U</span><span class="remaining-letters" style="margin-left: 1vw;">NTITLED</span></div>
-                    <div class="title-line2" style="margin-left: 0.9vw;"><span class="first-letter">U</span><span class="remaining-letters">NBRANDED</span></div>
-                </div>
-                <div class="crt-glow"></div>
-                <div class="crt-scanlines"></div>
-                <div class="crt-flicker"></div>
-                <div class="crt-distortion"></div>
-            </div>
-            <div class="crt-button"></div>
-            <div class="crt-power-light"></div>
+    <div class="crt-screen">
+        <div class="crt-content">
+            <div class="title-line1"><span class="first-letter">U</span><span class="remaining-letters" style="margin-left: 1vw;">NTITLED</span></div>
+            <div class="title-line2" style="margin-left: 0.9vw;"><span class="first-letter">U</span><span class="remaining-letters">NBRANDED</span></div>
         </div>
+        <div class="crt-glow"></div>
+        <div class="crt-scanlines"></div>
+        <div class="crt-flicker"></div>
+        <div class="crt-distortion"></div>
     </div>
 
     <script>
-        // Add some random jitter to the text to enhance the CRT effect
+        // Set up the bouncing text animation
         const content = document.querySelector('.crt-content');
+        const speed = 0.5; // pixels per frame
+        let posX = Math.random() * (window.innerWidth - content.offsetWidth);
+        let posY = Math.random() * (window.innerHeight - content.offsetHeight);
+        let dirX = speed * (Math.random() > 0.5 ? 1 : -1);
+        let dirY = speed * (Math.random() > 0.5 ? 1 : -1);
+        
+        // Add jitter and slight blur for CRT effect
         let jitterTimeout;
 
         function applyJitter() {
             const jitterX = Math.random() * 1.5 - 0.75;
             const jitterY = Math.random() * 1.5 - 0.75;
             
-            content.style.transform = `translate(${jitterX}px, ${jitterY}px)`;
+            const currentTransform = content.style.transform.replace(/translate3d\([^)]*\)/, '');
+            content.style.transform = `translate3d(${posX + jitterX}px, ${posY + jitterY}px, 0) ${currentTransform}`;
             
             const blurAmount = Math.random() * 1.5;
             content.style.filter = `blur(${blurAmount}px)`;
             
             jitterTimeout = setTimeout(applyJitter, 50 + Math.random() * 100);
         }
-
-        applyJitter();
-
-        // Occasionally simulate a more significant CRT distortion
+        
+        // Occasionally simulate more significant CRT distortion
         setInterval(() => {
             if (Math.random() < 0.1) {
                 const distortionEl = document.querySelector('.crt-distortion');
@@ -267,6 +207,59 @@
                 }, 150);
             }
         }, 2000);
+        
+        // Animation loop for bouncing effect
+        function animate() {
+            // Update position
+            posX += dirX;
+            posY += dirY;
+            
+            // Check for collisions with screen edges
+            const maxX = window.innerWidth - content.offsetWidth;
+            const maxY = window.innerHeight - content.offsetHeight;
+            
+            if (posX < 0) {
+                posX = 0;
+                dirX = -dirX;
+            } else if (posX > maxX) {
+                posX = maxX;
+                dirX = -dirX;
+            }
+            
+            if (posY < 0) {
+                posY = 0;
+                dirY = -dirY;
+            } else if (posY > maxY) {
+                posY = maxY;
+                dirY = -dirY;
+            }
+            
+            // Apply position (actual position is applied in the jitter function)
+            content.style.transform = `translate3d(${posX}px, ${posY}px, 0)`;
+            
+            requestAnimationFrame(animate);
+        }
+        
+        // Start animations
+        window.addEventListener('load', () => {
+            // Get initial content dimensions
+            setTimeout(() => {
+                posX = Math.random() * (window.innerWidth - content.offsetWidth);
+                posY = Math.random() * (window.innerHeight - content.offsetHeight);
+                animate();
+                applyJitter();
+            }, 100);
+        });
+        
+        // Handle window resize
+        window.addEventListener('resize', () => {
+            const maxX = window.innerWidth - content.offsetWidth;
+            const maxY = window.innerHeight - content.offsetHeight;
+            
+            // Keep position within bounds after resize
+            if (posX > maxX) posX = maxX;
+            if (posY > maxY) posY = maxY;
+        });
     </script>
 </body>
 </html>
